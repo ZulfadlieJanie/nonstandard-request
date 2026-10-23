@@ -180,8 +180,8 @@
 </div>
 
 <script>
-    // Replace with your actual Apps Script Web App Deployment URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+    // Live Google Apps Script Web App Deployment URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyRZPJxJQT84Z_lWA_9k3dj3gbHDYReRkmQD-uGgadIBTpavO02ToXPhO1jiSAwqdQ/exec";
 
     const SERIAL_BOX_COUNT = 1; 
     let serialBoxCounter = 0;
@@ -410,12 +410,20 @@
 
         fetch(SCRIPT_URL, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            },
             body: JSON.stringify({
                 action: 'saveRequest',
                 payload: formData
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(result => {
             document.getElementById('submitBtn').disabled = false;
             if (result.success) {
